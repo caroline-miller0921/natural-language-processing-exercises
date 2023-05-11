@@ -5,6 +5,7 @@ import requests
 import itertools
 import json
 import pickle
+import pandas as pd
 
 def get_inshorts_dicts(url, category): 
 
@@ -34,50 +35,44 @@ def get_inshorts_dicts(url, category):
     
     return article_list
 
-def get_sports_list():
+def get_sports_df():
     sports_list = get_inshorts_dicts('https://inshorts.com/en/read/sports', 'sports')
-    return sports_list
+    sports_df = pd.DataFrame(sports_list)
+    return sports_df
 
-def get_business_list():
+def get_business_df():
     business_list = get_inshorts_dicts('https://inshorts.com/en/read/business', 'business')
-    return business_list
+    business_df = pd.DataFrame(business_list)
+    return business_df
 
-def get_technology_list():
+def get_technology_df():
     technology_list = get_inshorts_dicts('https://inshorts.com/en/read/technology', 'technology')
-    return technology_list
+    technology_df = pd.DataFrame(technology_list)
+    return technology_df
 
-def get_entertainment_list():
+def get_entertainment_df():
     entertainment_list = get_inshorts_dicts('https://inshorts.com/en/read/entertainment', 'entertainment')
-    return entertainment_list
+    entertainment_df = pd.DataFrame(entertainment_list)
+    return entertainment_df
 
-def get_inshorts_list():
-    
-    sports_list = get_sports_list()
-    business_list = get_business_list()
-    technology_list = get_technology_list()
-    entertainment_list = get_entertainment_list()
+def get_inshorts_df():
+    sports_df = get_sports_df()
+    business_df = get_business_df()
+    entertainment_df = get_entertainment_df()
+    technology_df = get_technology_df()
 
-    
-    inshorts_list = []
-    inshorts_list.append(sports_list)
-    inshorts_list.append(business_list)
-    inshorts_list.append(technology_list)
-    inshorts_list.append(entertainment_list)
+    df = pd.concat([sports_df, business_df, technology_df, entertainment_df], axis = 0)
 
-    return inshorts_list
+    return df
 
 def get_inshorts_text():
     # if we already have the data, read it locally
     if os.path.exists('inshorts.txt'):
         with open('inshorts.txt') as f:
             return f.read()
-
-    # load the content
-    inshorts = get_business_list()
-
-    # save it for next time
-
-    with open('inshorts.txt', 'w') as fout:
-        pickle.dump(inshorts, fout)
-
-    return fout
+    
+    else:
+        df = get_inshorts_df()
+        with open('inshorts.txt', 'w') as f:
+            f.write(df.text)
+            return f.read()

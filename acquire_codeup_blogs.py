@@ -2,25 +2,7 @@ from requests import get
 from bs4 import BeautifulSoup
 import os
 import requests
-
-def get_article_text():
-    # if we already have the data, read it locally
-    if os.path.exists('article.txt'):
-        with open('article.txt') as f:
-            return f.read()
-
-    # otherwise go fetch the data
-    url = 'https://codeup.com/data-science/math-in-data-science/'
-    headers = {'User-Agent': 'Codeup Data Science'}
-    response = get(url, headers=headers)
-    soup = BeautifulSoup(response.text)
-    article = soup.find('div', id='main-content')
-
-    # save it for next time
-    with open('article.txt', 'w') as f:
-        f.write(article.text)
-
-    return article.text
+import pandas as pd
 
 def get_blog_dicts():
 
@@ -56,3 +38,20 @@ def get_blog_dicts():
 
     return article_list
 
+
+def get_blog_df():
+    article_list = get_blog_dicts()
+    df = pd.DataFrame(article_list)
+    return df
+
+def get_blog_text():
+    # if we already have the data, read it locally
+    if os.path.exists('codeup_blogs.txt'):
+        with open('codeup_blogs.txt') as f:
+            return f.read()
+    
+    else:
+        df = get_blog_df()
+        with open('codeup_blogs.txt', 'w') as f:
+            f.write(df.to_string(header=False, index=False))
+            return f.read()
