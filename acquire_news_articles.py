@@ -35,6 +35,30 @@ def get_inshorts_dicts(url, category):
     
     return article_list
 
+def get_sports_list():
+    sports_list = get_inshorts_dicts('https://inshorts.com/en/read/sports', 'sports')
+    return sports_list
+
+def get_business_list():
+    business_list = get_inshorts_dicts('https://inshorts.com/en/read/business', 'business')
+    return business_list
+
+def get_entertainment_list():
+    entertainment_list = get_inshorts_dicts('https://inshorts.com/en/read/entertainment', 'entertainment')
+    return entertainment_list
+
+def get_technology_list():
+    technology_list = get_inshorts_dicts('https://inshorts.com/en/read/technology', 'technology')
+    return technology_list
+
+def get_news_articles():
+    article_list = []
+    article_list.append(get_sports_list())
+    article_list.append(get_business_list())
+    article_list.append(get_entertainment_list())
+    article_list.append(get_technology_list())
+    return article_list
+
 def get_sports_df():
     sports_list = get_inshorts_dicts('https://inshorts.com/en/read/sports', 'sports')
     sports_df = pd.DataFrame(sports_list)
